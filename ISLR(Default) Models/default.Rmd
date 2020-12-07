@@ -1,0 +1,197 @@
+---
+Name: Trishal Varma
+Class: 4375 - Intro to Machine Learning
+Homework: 5
+output: pdf_document
+---
+
+#### Problem 1 ####
+
+# Step 1 
+Setting up the data Default using the ISLR library. Then running dim and names to get more informatoin. 
+Seed funciton to replicate the same data, and then dividing into test and train. 
+```{r}
+#a
+library(ISLR)
+data(Default)
+#b
+dim(Default)
+names(Default)
+#c
+df <- Default
+set.seed(1234)
+#d
+smp_size <- sample(1:nrow(df), .80*nrow(df), replace = FALSE)
+train <- df[smp_size,]
+test <- df[-smp_size,]
+
+```
+
+# Step 2
+Logistic regression model created and predicted on the yes/no test data plus the accuracy. 
+```{r}
+#a
+fit.glm <- glm(default ~ income + balance, data = Default, family = "binomial")
+
+#b
+summary(fit.glm)
+#c
+pred <- predict(fit.glm, type = "response")
+pred_value <- ifelse(pred > .5, 'Yes', 'No')
+
+#d
+acc1 <- mean(pred_value == Default$default)
+print(paste("Accuracy: ", acc1))
+
+```
+
+# Step 3
+Decision tree model created and summary was ran, and so was the accuracy that was computed. 
+```{r}
+library(rpart)
+#a
+tree_df <- rpart(default~., data= train, method = "class")
+#b
+summary(tree_df)
+#c
+pred_tree <- predict(tree_df, type ="class")
+
+acc2 <- mean(pred_tree == train$default)
+print(paste("Accuracy: ", acc2))
+```
+
+#Step 4
+Here were display the tree that was created to show the decisions that were taken by the tree. 
+```{r}
+plot(tree_df, uniform = TRUE)
+text(tree_df, use.n=TRUE, all=TRUE, cex=.6)
+```
+
+
+#### Problem 2 ####
+
+#Step 1 
+
+Setting up the data ones more, reading from the csv file saved on the desktop computer. loading the data into R and then attaching it. however it game a lot of errors with hidden data. Removing the X column, and setting train and test with 80%. 
+```{r}
+#a
+Heart <- read.csv(file = '/Users/trishalvarma/Desktop/Heart.csv')
+#b
+
+#attach funciton giving error on masked objects. can remove the # for testing purposes. 
+
+#attach(Heart) 
+
+#c
+df_heart <- Heart
+df_heart <- subset(df_heart, select = -c(X))
+# df_heart <- na.omit(df_heart)
+na.rm = TRUE
+#d
+names(df_heart)
+set.seed(2017)
+smp_heart <- sample(1:nrow(df_heart), .80*nrow(df_heart), replace = FALSE)
+heart.train <- df_heart[smp_heart,]
+heart.test <- df_heart[-smp_heart,]
+```
+
+# Step 2 
+Creating a logistical regression model on the training data where AHD is predicted by all other variabled. Computed the accuracy. 
+```{r}
+#a. 
+heart.train$AHD <- as.factor(heart.train$AHD)
+heart.test$AHD <- as.factor(heart.test$AHD)
+heart_glm <- glm(AHD ~.-AHD, data = heart.test, family = "binomial")
+
+#b
+summary(heart_glm)
+
+#c
+heart.pred <- predict(heart_glm, type = "response")
+heart_value <- ifelse(heart.pred > .5, 'Yes', 'No')
+
+#d
+heartacc <- mean(heart_value == heart.test$AHD)
+print(paste("Accuracy: ", heartacc))
+```
+
+# Step 3
+Creating a decision tree model on the training data set and running the summary. 
+computed the accuracy. 
+```{r}
+#a
+tree_df2 <- rpart(AHD~., data = heart.train, method = "class")
+#b
+summary(tree_df2)
+#c
+pred_heart.tree <- predict(tree_df2, type ="class")
+#d
+heart_treeacc <- mean(pred_heart.tree == heart.train$AHD)
+print(paste("Accuracy: ", heart_treeacc))
+```
+
+# Step 4
+Here we display the tree that were created. 
+```{r}
+#a
+plot(tree_df2, uniform = TRUE)
+#b
+text(tree_df2, use.n = TRUE, all=TRUE, cex=.6)
+
+```
+# Step 5
+Cross validation funcition used to get the best n value and ploteed on a 1x2 format. 
+```{r}
+#a 
+tree <- tree(heart.train$AHD~., data = heart.train)
+cv_tree <- cv.tree(tree)
+#b
+cv_tree$dev
+cv_tree$size
+#c
+par(mfrow = c(1,2))
+plot(cv_tree$size, cv_tree$dev, type='b')
+plot(cv_tree$k, cv_tree$dev, type = 'b')
+```
+
+# Step 6
+Pruned the tree with the best n value we found from step 5. 
+```{r}
+#a. 
+tree_pruned <- prune.tree(tree, best=5)
+#b
+plot(tree_pruned)
+text(tree_pruned, pretty = 0)
+
+```
+
+# Step 7
+predicting on the pruned tree, and computing the accuracy of it. 
+```{r}
+#a.
+
+prune_pred <- predict(tree_pruned, newdata = heart.test)
+
+#b.
+prune_acc <- mean(prune_pred)
+print(paste("Accuracy: ", prune_acc))
+```
+
+Questions: 
+
+Problem 1 
+1. Income and Balance were important, and default, student were not. 
+2. Accuracy for the logistical regression was 97.37% and for the decision tree was 97.41% 
+3. One reason can be that since it is a greedy algorithm, and once a decision has been made, it doesn't reconsider earlier steps. The other reason could be cause it maybe more pure than the other, so it can have two no. 
+4. if balance > 1800
+    then yes
+    else no 
+5. The accuracy is pretty high in both the tree and the regression, so there is no need to prune the tree. 
+
+Problem 2
+1. None of the variables as shows were important in the regression model. As their Pr(>|z|) value is higher than .5. 
+2. The AHD data was used to create the decision tree. 
+3. Logistic accuracy was 80.32%, while the Decision tree accuracy was 86.36% 
+4. Pruned tree resulted in a value of 50% 
+5. Judging by just the accuracy of the data calculated, the decision tree accuracy may be more important to a doctor than the others. 
+
