@@ -1,0 +1,181 @@
+---
+Trishal Varma
+Machine Learning
+---
+
+
+## Problem 1 step 1 
+
+setting seed to 1234 and dividing into 75% of the data in train and test. 
+```{r}
+library(ISLR)
+data(Auto)
+
+
+str(Auto)
+set.seed(1234)
+sample_i <- sample(1:nrow(Auto), .75*nrow(Auto), replace=FALSE)
+train <- Auto[sample_i,]
+test <- Auto[-sample_i,]
+```
+
+## Problem 1 step 2 
+
+Using a linear regression model. 
+```{r}
+lm1 <- lm(mpg~cylinders + displacement + horsepower, data=train)
+summary(lm1)
+plot(lm1)
+```
+
+## Problem 1 step 3 
+evaulating the model for test data. 
+```{r}
+probs <- predict(lm1, newdata=test)
+pred <- predict(lm1, newdata=test)
+
+mse <- mean((pred - test$mpg)^2)
+cor1 <- cor(pred, test$mpg)
+
+print(paste('correlation:', cor1))
+print(paste('MSE: ', mse))
+
+```
+
+## Problem 1 step 4
+using the Knn regression model with k=1 as default. 
+```{r}
+library(caret)
+
+train$mpg <- as.integer(train$mpg)
+test$mpg <- as.integer(test$mpg)
+
+fit <- knnreg(train[,2:8], train[,1], k=1)
+pred1 <- predict(fit, test[,2:8])
+
+cor_knn1 <- cor(pred1, test$mpg)
+mse_knn1 <- mean((pred1 - test$mpg)^2)
+
+print(paste("Correlation: ", cor_knn1))
+print(paste("MSE: ", mse_knn1))
+
+```
+
+## Problem 1 step 5
+
+Analysis 
+a. In terms of correlation, the kNN Regression metric was 82.36% while the linear regression metric was 80.58%. kNN Regression metric yielded a better more refined result than the linear regression. 
+
+b. In terms of mse, it was the oppposite. mse for kNN model was 20.071, whiel linear regression had 21.75. Although it is not a huge difference. 
+ 
+c. kNN performas better when the data is scaled. That is the reason why it was different in these cases. 
+
+d. Since we chose a smaller K value, we had a low bias, but a higher variance. as k grows we get higher bias.  
+
+
+## Problem 2 step 1
+Using the BreastCancel data from mlbench. 
+dividing into cell small and cell regular. 
+```{r}
+library(mlbench)
+data(BreastCancer)
+
+summary(BreastCancer$Cell.size)
+summary(BreastCancer$Cell.shape)
+BreastCancer$Cell.small <- c(ifelse(BreastCancer$Cell.size ==1,1,0))
+
+BreastCancer$Cell.regular <- c(ifelse(BreastCancer$Cell.shape ==1,1,0))
+
+
+BreastCancer$Cell.small <- as.factor(BreastCancer$Cell.small)
+BreastCancer$Cell.regular <- as.factor(BreastCancer$Cell.regular)
+
+summary(BreastCancer$Cell.small)
+summary(BreastCancer$Cell.regular)
+
+set.seed(1234) 
+
+cell_sample <- sample(1:nrow(BreastCancer), 0.75*nrow(BreastCancer), replace = FALSE)
+
+cell_train <- BreastCancer[cell_sample,]
+cell_test <- BreastCancer[-cell_sample,]
+
+df <- BreastCancer
+attach(df)
+```
+
+
+## Problem 2 step 2
+building a logistical regression model
+```{r}
+
+glm <- glm(Class ~ Cell.small +Cell.regular, data = cell_train, family = binomial())
+
+summary(glm)
+
+
+```
+
+## Problem 2 step 3
+evaluating th model with test data. 
+```{r}
+
+probs_cell <- predict(glm, newdata = cell_test, type = "response")
+pred_cell <- ifelse(probs_cell>0.5,2,1)
+
+acc1 <- mean(pred_cell==as.integer(cell_test$Class))
+print(paste("Accuracy: ", acc1))
+
+library(caret)
+table(pred_cell, as.integer(cell_test$Class))
+confusionMatrix(as.factor(pred_cell), as.factor(as.integer(cell_test$Class)))
+
+
+```
+
+## Problem 2 Step 4 
+Using the kNN function on package class with sample data into t. 
+
+using labels to create the mdoel. 
+```{r}
+library(class)
+t <- sample(1:nrow(BreastCancer), 0.75*nrow(BreastCancer), replace = FALSE)
+cell_train2 <- BreastCancer[t,12:13]
+cell_test2 <- BreastCancer[-t,12:13]
+
+Tilabel <- BreastCancer[t,10]
+Tslabel <- BreastCancer[-t,10]
+
+
+knn_modelfit <- knn(cell_train2, cell_test2, Tilabel)
+acc2 <- length(which(knn_modelfit == Tslabel)) / length(knn_modelfit)
+print(paste("Accuracy:  ", acc2))
+table(knn_modelfit, as.integer(Tslabel))
+
+```
+
+## Problem 2 step 5 
+
+Running kNN predictor on column 2-8, and 8 to 10 using k=1 as defauly. Listing the accuracy of the data. 
+```{r}
+library(class)
+p <- sample(1:nrow(BreastCancer), 0.75*nrow(BreastCancer), replace = FALSE)
+
+cell_train3 <- BreastCancer[p,2:6,8:10]
+cell_test3 <- BreastCancer[p,2:6,8:10]
+
+Tilabel <- BreastCancer[p,10]
+Tslabel <- BreastCancer[-p,10]
+
+knn_modelfit2 <- knn(cell_train3, cell_test3, Tilabel, k=1)
+acc3 <- length(which(knn_modelfit2 == Tslabel)) / length(knn_modelfit2)
+print(paste("Accuracy: ", acc3))
+
+
+```
+
+## Problem 2 Step 6
+
+a. We had accuracy of 89.14% when we evaluated the model and used the confusion matrix. When we used the kNN function, with Class as target, we had an accuracy of 78%, and with specefic columns in step 5, we had a lowered accuracy of 72.13%. 
+
+b. kNN is considered the lazy learning function. As we narraowed the data, the prediction became worse and worse, as it is able to determine higher percentage when it has more data to use in its function. kNN performs poorly in low dimnesion. 
