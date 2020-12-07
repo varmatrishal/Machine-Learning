@@ -1,0 +1,186 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+Trishal Varma 
+Machine Learning CS4375
+Prof: Karen Mazidi
+Homeowrk 2 
+
+#Step 1 
+Loading library("ISLR") in console, and then using names(AUTO) to get the to load, and get the summary to understand more about the data set. 
+```{r}
+names(Auto)
+summary(Auto)
+```
+Sperating 75% of data Auto
+```{r}
+data(Auto)
+smp_size <- floor(.75 * nrow(Auto))
+```
+Set seed "1234" for reproducibility and storing them in train_ind. Creating Train and Test.
+```{r}
+data(Auto)
+set.seed(1234)
+train_ind <- sample(seq_len(nrow(Auto)), size = smp_size)
+
+train <- Auto[train_ind,]
+test <- Auto[-train_ind,] 
+```
+
+#Step 2 
+Using the lm() function for a regression on train data set. predicting mpg in relation with horsepower. 
+
+MSE is the mean((pred-[testdata set mpg])squared)
+printing the mse value at the end. 
+```{r}
+lm1 <- lm(mpg~horsepower, data=train)
+summary(lm1)
+
+pred <- predict(lm1, newdata = test)
+mse <- mean((pred - test$mpg)^2)
+print(paste("mse: ",mse))
+```
+
+#Step 3 
+
+
+a) w = -.156681   b = 39.648595
+b) There is not a strong relationship between Horsepower and MPG. 
+c) It is a negative correlation. 
+d) RSE of approx. 4.9 shows how off our model is from the data. Calculated on a 292 degree freedom. 
+
+R^2 value is .6136 which means close to 61% of our variance data is able to predict the model. 
+
+F-Static is 463.7 on 1 which is far away, and indicates predictor and target are related. 
+e) The amount of error (mse) is 25.71
+
+# Step 4 
+Plotting lm1 using predict first and then plotting the train mpg with its horsepower. 
+
+<!-- As the MPG increases, the horsepower decreases. -->
+```{r}
+predict(lm1, data.frame(horsepower = 98), interval ="confidence")
+plot(train$mpg~train$horsepower, main ="Train mpg vs. horsepower", xlab = "mpg", ylab = "horsepower")
+abline(lm1, col = "blue")
+```
+
+#Step 5
+The R^2 value is .58, which is not good. The MSE for the comparision is off by a lot. 
+```{r}
+lm2 <- lm(mpg~horsepower, data=test)
+summary(lm2)
+pred1 <- predict(lm2, newdata = test)
+mse2 <- mean((pred - test$mpg)^2)
+print(paste("mse: ",mse2))
+
+```
+
+#Step 6 
+There is evidence of non-lineartiy from the residual graphs. 
+```{r}
+par(mfrow=c(2,2))
+plot(test)
+```
+
+# Step 7
+2nd Linear model to predict mpg by horsepower. The r^2 increases to approx. 62% which is better than the prevous result. 
+```{r}
+model2 <- lm(formula = log(mpg)~horsepower, data= train)
+summary(model2)
+```
+
+#step 8
+The line doesn't fit the data well.
+```{r}
+plot(model2)
+abline(model2, col="darkblue")
+```
+
+# Step 9
+Predicted lm2 and calculated the MSE value of for it. Used log function on mpg. 
+```{r}
+pred <- predict(model2, newdata =test)
+print("Correlation Coefficient")
+lm2 <- log(test$mpg)
+cor(pred,temp2)
+print("MSE: ")
+mse <- mean((pred-log(test$mpg)^2))
+mse
+```
+
+#Step 10
+Second linear model with graph from second model. 
+```{r}
+par(mfrow=c(2,2))
+plot(model2)
+```
+
+#### Problem 2
+
+#Step 1 
+Scatterplot matrix that has all the variables in the data set using pairs. 
+
+It has a r^2 of 73% which is a not too good and not too bad. The RSE is 4.103 on a 386 degree freedom.  
+```{r}
+fit3 <- lm(mpg~cylinders*displacement+displacement*weight, data = Auto[,1:8])
+summary(fit3)
+
+pairs(Auto)
+plot(Auto$horsepower, Auto$mpg, main = "Scatterplot of MPG by Horsepower", xlab = "Horsepower", ylab = "Miles per gallon", col = "blue")
+abline(fit3, col="red")
+par(mfrow =c(2,2))
+plot(fit3)
+
+```
+
+Matrix played with corelation. 
+#Step 2
+Matrix with name being taken out. To make it qualitative. 
+```{r}
+cor(Auto[,names(Auto) !="name"])
+```
+
+lm function to perform multiple linear regression with name exluded. This included mpg. 
+
+There are a few significat relationship to the reponse. 
+#Step 3
+```{r}
+model = lm(mpg~ . - name, data = Auto)
+summary(model)
+
+```
+
+#Step 4
+Plotting to find a dignostic plot of regression fit. 
+There are no leverage points accourding to graph 3 however, in graph 4 there is a point numbered 14 on the graph that can be used as a significant predictor for leverage point. 
+```{r}
+par(mflow = c(2,2))
+plot(model)
+str(Auto[14,])
+```
+
+
+#Step 5
+
+Found a few models to compare, the last model is the most significant as it correlates to almost all of them except for 1. 
+
+With a r^2 of approx. 86% this is the best comparision. 
+
+```{r}
+model = lm(mpg ~ . - name+displacement:weight, data = Auto)
+summary(model)
+
+model = lm(mpg ~ . -name+displacement:cylinders+displacement:weight+year:origin+acceleration: horsepower, data = Auto)
+summary(model)
+
+model = lm(mpg ~ . -name-cylinders-acceleration+year:origin+displacement:weight+displacement:weight+acceleration:horsepower+acceleration:weight, data = Auto)
+summary(model)
+
+
+```
+
+```{r}
+anova(model,model2)
+```
