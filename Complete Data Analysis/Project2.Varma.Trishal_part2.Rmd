@@ -1,0 +1,190 @@
+---
+title: "Project 2"
+Name: Trishal Varma
+Class: 4375 - Intro to Machine Learning w/ Mazidi
+output: word_document
+---
+
+# Importing the data and saving it 
+```{r}
+bank <- read.csv(file = '/Users/trishalvarma/Desktop/bank-full.csv')
+```
+
+# Data Clearning
+---
+Website: https://archive.ics.uci.edu/ml/datasets/bank+marketing
+From: "UCI Machine Learning Repositor"
+---
+Used any(is.na(data)) to see if there are any data missing from the columns. Then used na.omit, because data can be filled with NA and not show up as a blank data. Eliminates missing values. Provided the link from where the data is downloaded. 
+
+Steps taken are listed above, to remove any blank/na values.
+#Data Cleanup
+```{r}
+bank$default <- NULL
+bank$day <- NULL
+
+bank$duration <- NULL
+bank$pdays <- NULL
+bank$previous <- NULL
+bank$poutcome <- NULL
+
+bank$y <- NULL
+bank$contact <- NULL
+str(bank)
+```
+
+Grouping bank and bank job so we can use it as combined.
+
+```{r}
+library(dplyr)
+group_by(bank, bank$job)
+
+bank$campaign <- NULL
+```
+
+Creating factors of the variables we will be using. 
+
+We also removed the outliers from the bank dataset. 
+```{r}
+bank$education <- as.factor(bank$education)
+bank$marital <- as.factor(bank$marital)
+bank$job <- as.factor(bank$job)
+bank$housing <- as.factor(bank$housing)
+bank$loan <- as.factor(bank$loan)
+
+outliers <- boxplot(bank$age, plot=FALSE)$out
+bank <- bank[-which(bank$age %in% outliers),]
+nrow(bank)
+outliers1 <- boxplot(bank$balance, plot=FALSE)$out
+bank <- bank[-which(bank$balance %in% outliers1),]
+nrow(bank)
+
+```
+
+# Data Exploration 
+
+Using more than 5 functions to look at the Air Quality data, then providing a informative R graphs using a historgram, and a plot chart to show the just the sheer amount of data that was collected. 
+
+```{r}
+tapply(bank$age, bank$job, mean)
+
+# then we also check on balance, and education 
+tapply(bank$balance, bank$education, mean)
+
+# we can create a table and combine the martial status and the job they have. 
+library(gmodels)
+bn.table <- table(bank$marital, bank$job)
+bn.table
+```
+Now we can see visual data exploration. 
+
+Here we are able to see the loan and age taken, and the loan and balance takent. 
+```{r}
+cdplot(bank$loan~bank$age)
+cdplot(bank$loan~ bank$balance)
+
+# second exploration visually is the histogram
+
+hist(bank$balance) #Here we notice that there are a few that shows negative balance, and could effect the algorithms we will be running. 
+```
+Lets create a test and a training data set
+we create 2 training and 2 test, just in case. 
+```{r}
+set.seed(1234)
+bank1 <- bank
+bank1 <- na.omit(bank1)
+
+sample_i <- sample(1:nrow(bank1), .80*nrow(bank1), replace=FALSE)
+train <- bank1[sample_i,]
+test <- bank1[-sample_i,]
+
+train1 <- bank1[sample_i,]
+test1 <- bank1[-sample_i,]
+```
+
+For classification algorithm, we will run a Logistical regression. Even though it is a regression, it is actually a clasficiation algorithm. 
+
+```{r}
+gg <- glm(age~., data = train)
+summary(gg)
+plot(gg)
+
+pred1 <- predict(gg, newdata = test)
+
+cor1 <- cor(pred1, test$age)
+mse1 <- mean((pred1 - test$age)^2)
+
+print(paste("MSE:  ", mse1))
+print(paste("Corrleation: ", cor1))
+```
+
+Not bad, but not good, we have a MSE of 61, and a correlation of 59.52 but almost 60. So we'll keep that in mind for later. 
+
+#Let's run our second algorithm kNN, and this time using test1 and train1. 
+```{r}
+test1$housing <- as.numeric(test1$housing)
+train1$housing <- as.numeric(train1$housing)
+
+test1$age <- as.numeric(test1$age)
+train1$age <- as.numeric(train1$age)
+
+test1$job <- as.numeric(test1$job)
+train1$job <- as.numeric(train1$job)
+
+test1$marital <- as.numeric(test1$marital)
+train1$marital <- as.numeric(train1$marital)
+
+test1$education <- as.numeric(test1$education)
+train1$education <- as.numeric(train1$education)
+
+test1$balance <- as.numeric(test1$balance)
+train1$balance <- as.numeric(train1$balance)
+
+test1$loan <- as.numeric(test1$loan)
+train1$loan <-as.numeric(train1$loan)
+
+library(caret)
+library(lattice)
+library(ggplot2)
+
+knn_fit <- knnreg(age~., data = test1, k = 5)
+pred_knn <- predict(knn_fit, test1)
+
+cor_knn <- cor(pred_knn, test1$age)
+mse_knn <- mean((pred_knn - test1$age)^2)
+
+print(paste("Correlation for KNN: ", knn_fit))
+print(paste("MSE for KNN: ", mse_knn))
+
+
+
+
+```
+
+This prints out a long data, but we can see that the mse is 67, adn the correlation is 5. kNN might not be the best sutated for this data. 
+
+Lets run a random forest and see our tree
+
+```{r}
+library(randomForest)
+set.seed(1234)
+tree <- randomForest(age~., data=test, importance = TRUE) 
+tree
+```
+
+#Analysis 
+
+Ranking of algorithms
+
+1) random Forest
+2) Linear Regression
+3) kNN 
+
+In this case as well, we have random Forest being top, because of the number of trees it can create. We can increase the number of tries, but 1 is sufficient to know that it performed well. The mean residuals. Lieanr regression also gave us very good number, as commented above, and kNN did give us a better MSE, however it was very messy to deal with. 
+#the data for kNN was edited
+so it could fit in the pdf and not be long. The time it took for the kNN as well on such a large data also effected it perfomrance. 
+
+We were able to look at the age and loan amount for people and in this case the random forrest would be the best to analysize the data. 
+
+What we learned; 
+EX: If people older age have higher balanace, then it is likely they would be approved for loans, whereas, a lower balance made it a risk for loans. It was defintely a good data to work with, the more we learn, the more we can work with. 

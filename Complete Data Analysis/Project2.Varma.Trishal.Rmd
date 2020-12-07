@@ -1,0 +1,158 @@
+---
+title: "Project 2"
+Name: Trishal Varma
+Class: 4375 - Intro to Machine Learning w/ Mazidi
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+
+# Importing the data and saving it 
+```{r}
+AirQ <- read.csv(file = '/Users/trishalvarma/Desktop/Changping.csv')
+```
+
+# Data Clearning
+---
+Website: http://archive.ics.uci.edu/ml/datasets/Beijing+Multi-Site+Air-Quality+Data 
+From: "UCI Machine Learning Repositor"
+---
+Used any(is.na(data)) to see if there are any data missing from the columns. Then used na.omit, because data can be filled with NA and not show up as a blank data. Eliminates missing values. Provided the link from where the data is downloaded. 
+
+Steps taken are listed above, to remove any blank/na values.
+#Datal Cleanup
+```{r}
+AirQ$No <- NULL 
+AirQ$PRES <- NULL
+AirQ$DEWP <- NULL
+AirQ$station <- NULL
+AirQ$RAIN <- NULL
+AirQ$TEMP <- NULL
+AirQ$wd <- NULL
+AirQ$O3 <- NULL
+
+any(is.na(AirQ))
+na.rm = TRUE 
+
+
+```
+
+
+```{r}
+df <- AirQ 
+
+df$year <- as.factor(df$year)
+df$month <- as.factor(df$month)
+df$day <- as.factor(df$day)
+df$PM2.5 <- as.factor(df$PM2.5)
+df$PM10 <- as.factor(df$PM10)
+df$SO2 <- as.factor(df$SO2)
+df$CO <- as.factor(df$CO)
+df$NO2 <- as.factor(df$NO2)
+
+```
+
+# Data Exploration 
+
+Using more than 5 functions to look at the Air Quality data, then providing a informative R graphs using a historgram, and a plot chart to show the just the sheer amount of data that was collected. 
+```{r}
+class(AirQ)
+head(AirQ, 5)
+tail(AirQ, 2)
+dim(AirQ)
+summary(AirQ)
+names(AirQ)
+
+# Visual Data Exploration
+hist(AirQ$NO2,
+     main = "Histogram of NO2 in Beijing",
+     xlab = "NO2",
+     xlim=c(0,220),
+     col = "chartreuse4")
+
+plot(AirQ$NO2, col = rgb(0,0,0, alpha =.3))
+
+```
+
+#Running Algorithms on the data set. 
+
+Linear regression run on NO2 + PM10 + PM2.5 in comparison to hour + day to find strong predictors for later tests to be comepleted for this data. I will be paired with other data to corroborate the increase in polution in comparision to either hour, day, or year. 
+
+PM10 and PM2.5 refer to the diameter of the particulates pollution in the air which is a good comparision with hour and time with rising levels of harmful gasses. 
+
+We use hour and day so we can see the trend throughout the day of the levels of harmful 
+```{r}
+##### Linear Regression #####
+set.seed(1234)
+sample_i <- sample(1:nrow(AirQ), .75*nrow(AirQ), replace=FALSE)
+train_no2 <- AirQ[sample_i,]
+test_no2 <- AirQ[-sample_i,]
+
+lm1 <- lm(NO2 + PM10 + PM2.5 ~ hour + day, data=train_no2)
+summary(lm1)
+plot(lm1)
+# Day is not a strong prediction, so we will run other algorithms to look at the data in the next chunk of code. 
+
+pd1 <- predict(lm1, newdata = test_no2)
+
+cor_lm <- cor(pd1,test_no2$NO2)
+mse_lm <- mean(pd1 - test_no2$NO2)
+
+```
+
+We will use kNN function, which can be used for both classification and regression problems. Higher range varibales can have bias, and it does get expensive to run this algorithm. However, it might help us remove some noise from the data we have built. 
+```{r}
+library(caret)
+library(lattice)
+library(ggplot2)
+
+no2_knn <- knnreg(NO2~year, data = AirQ, k = 5)
+pred1 <- predict(lm1, test_no2[,1:10])
+
+cor_knn1 <- cor(pred1 - as.matrix(test_no2$year))
+
+print(paste("Correlation: ", cor_knn1))
+
+```
+We get a correlation of 1, which means that both variables move in the same direction together. So there is a strong connection to the the NO2 levels moving in the same direction as year goes on. A negative correlation would have shown us that as the years go on, levels of NO2 in the atmosphere in Beijing is decreasing, which would have been a good sign. 
+
+However that is not the case for us. 
+
+```{r}
+
+test_no2$NO2 <- as.factor(test_no2$NO2)
+test_no2$year <- as.factor(test_no2$year)
+
+library(randomForest)
+set.seed(1234)
+
+fit_rf <- randomForest(formula = NO2~.,
+                       data=test_no2,
+                       importance = TRUE,
+                       pr0ximity = TRUE,
+                       mtry =1, 
+                       na.action = na.roughfix)
+print(fit_rf,5)
+```
+
+
+#### Results Analysis ### 
+
+Ranking of algorithms
+
+1) random Forest
+2) Linear Regression
+3) kNN 
+
+The performance of random forest was next to none as it made over 500 trees and the reported on the error rate. Linear regression comes right after that since it is a regression model on such a large data, it was easier to use it than the kNN function. 
+
+kNN function was the worst case scenario for the data. 
+
+script was able to learn that target variables were weak linear relatinship however, still able to complete the test. 
+
+
+
+
+
