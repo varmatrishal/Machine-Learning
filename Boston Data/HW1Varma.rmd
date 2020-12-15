@@ -1,5 +1,5 @@
 ## Trishal Varma
-## Hw1 - Machine Learning
+## Machine Learning
 
 
 ```{r}
