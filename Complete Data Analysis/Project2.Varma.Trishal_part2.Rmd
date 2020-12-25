@@ -188,3 +188,5 @@ We were able to look at the age and loan amount for people and in this case the 
 
 What we learned; 
 EX: If people older age have higher balanace, then it is likely they would be approved for loans, whereas, a lower balance made it a risk for loans. It was defintely a good data to work with, the more we learn, the more we can work with. 
+
+Dont mind the spelling mistakes if there are any. 
