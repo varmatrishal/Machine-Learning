@@ -5,7 +5,7 @@ output:
 ---
 Trishal Varma
 Machine Learning
-Homework 3
+
 
 
 # Step 1
