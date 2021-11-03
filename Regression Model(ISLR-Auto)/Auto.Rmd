@@ -29,7 +29,7 @@ plot(lm1)
 ```
 
 ## Problem 1 step 3 
-evaulating the model for test data. 
+evaluating the model for test data.
 ```{r}
 probs <- predict(lm1, newdata=test)
 pred <- predict(lm1, newdata=test)
@@ -66,9 +66,9 @@ print(paste("MSE: ", mse_knn1))
 Analysis 
 a. In terms of correlation, the kNN Regression metric was 82.36% while the linear regression metric was 80.58%. kNN Regression metric yielded a better more refined result than the linear regression. 
 
-b. In terms of mse, it was the oppposite. mse for kNN model was 20.071, whiel linear regression had 21.75. Although it is not a huge difference. 
+b. In terms of mse, it was the opposite. mse for kNN model was 20.071, while linear regression had 21.75. Although it is not a huge difference.
  
-c. kNN performas better when the data is scaled. That is the reason why it was different in these cases. 
+c. kNN performs better when the data is scaled. That is the reason why it was different in these cases.
 
 d. Since we chose a smaller K value, we had a low bias, but a higher variance. as k grows we get higher bias.  
 
@@ -136,7 +136,7 @@ confusionMatrix(as.factor(pred_cell), as.factor(as.integer(cell_test$Class)))
 ## Problem 2 Step 4 
 Using the kNN function on package class with sample data into t. 
 
-using labels to create the mdoel. 
+using labels to create the model.
 ```{r}
 library(class)
 t <- sample(1:nrow(BreastCancer), 0.75*nrow(BreastCancer), replace = FALSE)
@@ -156,7 +156,7 @@ table(knn_modelfit, as.integer(Tslabel))
 
 ## Problem 2 step 5 
 
-Running kNN predictor on column 2-8, and 8 to 10 using k=1 as defauly. Listing the accuracy of the data. 
+Running kNN predictor on column 2-8, and 8 to 10 using k=1 as default. Listing the accuracy of the data.
 ```{r}
 library(class)
 p <- sample(1:nrow(BreastCancer), 0.75*nrow(BreastCancer), replace = FALSE)
@@ -176,6 +176,7 @@ print(paste("Accuracy: ", acc3))
 
 ## Problem 2 Step 6
 
-a. We had accuracy of 89.14% when we evaluated the model and used the confusion matrix. When we used the kNN function, with Class as target, we had an accuracy of 78%, and with specefic columns in step 5, we had a lowered accuracy of 72.13%. 
+a. We had accuracy of 89.14% when we evaluated the model and used the confusion matrix. When we used the kNN function, with Class as target, we had an accuracy of 78%, and with specific columns in step 5, we had a lowered accuracy of 72.13%.
 
-b. kNN is considered the lazy learning function. As we narraowed the data, the prediction became worse and worse, as it is able to determine higher percentage when it has more data to use in its function. kNN performs poorly in low dimnesion. 
+b. kNN is considered the lazy learning function. As we narrowed the data, the prediction became worse and worse, as it is able to determine higher percentage when it has more data to use in its function. kNN performs poorly in low dimension
+.

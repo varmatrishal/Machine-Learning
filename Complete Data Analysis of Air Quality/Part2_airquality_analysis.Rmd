@@ -10,10 +10,10 @@ output: word_document
 bank <- read.csv(file = '/Users/trishalvarma/Desktop/bank-full.csv')
 ```
 
-# Data Clearning
+# Data Cleaning
 ---
 Website: https://archive.ics.uci.edu/ml/datasets/bank+marketing
-From: "UCI Machine Learning Repositor"
+From: "UCI Machine Learning Repository"
 ---
 Used any(is.na(data)) to see if there are any data missing from the columns. Then used na.omit, because data can be filled with NA and not show up as a blank data. Eliminates missing values. Provided the link from where the data is downloaded. 
 
@@ -63,7 +63,7 @@ nrow(bank)
 
 # Data Exploration 
 
-Using more than 5 functions to look at the Air Quality data, then providing a informative R graphs using a historgram, and a plot chart to show the just the sheer amount of data that was collected. 
+Using more than 5 functions to look at the Air Quality data, then providing a informative R graphs using a histogram, and a plot chart to show the just the sheer amount of data that was collected.
 
 ```{r}
 tapply(bank$age, bank$job, mean)
@@ -78,7 +78,7 @@ bn.table
 ```
 Now we can see visual data exploration. 
 
-Here we are able to see the loan and age taken, and the loan and balance takent. 
+Here we are able to see the loan and age taken, and the loan and balance taken.
 ```{r}
 cdplot(bank$loan~bank$age)
 cdplot(bank$loan~ bank$balance)
@@ -102,7 +102,7 @@ train1 <- bank1[sample_i,]
 test1 <- bank1[-sample_i,]
 ```
 
-For classification algorithm, we will run a Logistical regression. Even though it is a regression, it is actually a clasficiation algorithm. 
+For classification algorithm, we will run a Logistical regression. Even though it is a regression, it is actually a classification algorithm.
 
 ```{r}
 gg <- glm(age~., data = train)
@@ -161,7 +161,7 @@ print(paste("MSE for KNN: ", mse_knn))
 
 ```
 
-This prints out a long data, but we can see that the mse is 67, adn the correlation is 5. kNN might not be the best sutated for this data. 
+This prints out a long data, but we can see that the mse is 67, adn the correlation is 5. kNN might not be the best suited for this data.
 
 Lets run a random forest and see our tree
 
@@ -180,13 +180,13 @@ Ranking of algorithms
 2) Linear Regression
 3) kNN 
 
-In this case as well, we have random Forest being top, because of the number of trees it can create. We can increase the number of tries, but 1 is sufficient to know that it performed well. The mean residuals. Lieanr regression also gave us very good number, as commented above, and kNN did give us a better MSE, however it was very messy to deal with. 
+In this case as well, we have random Forest being top, because of the number of trees it can create. We can increase the number of tries, but 1 is sufficient to know that it performed well. The mean residuals. Linear regression also gave us very good number, as commented above, and kNN did give us a better MSE, however it was very messy to deal with.
 #the data for kNN was edited
-so it could fit in the pdf and not be long. The time it took for the kNN as well on such a large data also effected it perfomrance. 
+so it could fit in the pdf and not be long. The time it took for the kNN as well on such a large data also effected it performance.
 
-We were able to look at the age and loan amount for people and in this case the random forrest would be the best to analysize the data. 
+We were able to look at the age and loan amount for people and in this case the random forrest would be the best to analysis the data.
 
 What we learned; 
-EX: If people older age have higher balanace, then it is likely they would be approved for loans, whereas, a lower balance made it a risk for loans. It was defintely a good data to work with, the more we learn, the more we can work with. 
+EX: If people older age have higher balance, then it is likely they would be approved for loans, whereas, a lower balance made it a risk for loans. It was definitely a good data to work with, the more we learn, the more we can work with.
 
-Dont mind the spelling mistakes if there are any. 
+Don't mind the spelling mistakes if there are any.

@@ -8,8 +8,8 @@ output: pdf_document
 #### Problem 1 ####
 
 # Step 1 
-Setting up the data Default using the ISLR library. Then running dim and names to get more informatoin. 
-Seed funciton to replicate the same data, and then dividing into test and train. 
+Setting up the data Default using the ISLR library. Then running dim and names to get more information.
+Seed function to replicate the same data, and then dividing into test and train.
 ```{r}
 #a
 library(ISLR)
@@ -96,7 +96,7 @@ heart.test <- df_heart[-smp_heart,]
 ```
 
 # Step 2 
-Creating a logistical regression model on the training data where AHD is predicted by all other variabled. Computed the accuracy. 
+Creating a logistical regression model on the training data where AHD is predicted by all other variable. Computed the accuracy.
 ```{r}
 #a. 
 heart.train$AHD <- as.factor(heart.train$AHD)
@@ -140,7 +140,7 @@ text(tree_df2, use.n = TRUE, all=TRUE, cex=.6)
 
 ```
 # Step 5
-Cross validation funcition used to get the best n value and ploteed on a 1x2 format. 
+Cross validation function used to get the best n value and plottedß on a 1x2 format.
 ```{r}
 #a 
 tree <- tree(heart.train$AHD~., data = heart.train)

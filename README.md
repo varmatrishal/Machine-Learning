@@ -12,7 +12,11 @@ Content:
 2. BreastCancer_DataAnalysis 
     a. BreastCancer_DataAnalysis.rmd -          Program done in R analysis tumor cells
     
-3. Needs updating
+3. Complete Data Analysis of Air Quality
+    a. Part1_airquality_analysis.Rmd -          R program containing air quality analysis using certain algorithms.
+    b. Part1_analysis.pdf                       pdf version of analysis plus data
+    c. Part2_airquality_analysis.Rmd-                      Different algorithms
+    d. Part2_analysis.pdf                       pdf version of analysis plus data
 
 4. ISLR 
     a. default.rmd -                            Program in R

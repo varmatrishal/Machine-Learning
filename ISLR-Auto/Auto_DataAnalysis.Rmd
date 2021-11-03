@@ -13,7 +13,7 @@ Loading library("ISLR") in console, and then using names(AUTO) to get the to loa
 names(Auto)
 summary(Auto)
 ```
-Sperating 75% of data Auto
+Separating 75% of data Auto
 ```{r}
 data(Auto)
 smp_size <- floor(.75 * nrow(Auto))
@@ -66,7 +66,7 @@ abline(lm1, col = "blue")
 ```
 
 #Step 5
-The R^2 value is .58, which is not good. The MSE for the comparision is off by a lot. 
+The R^2 value is .58, which is not good. The MSE for the comparison is off by a lot.
 ```{r}
 lm2 <- lm(mpg~horsepower, data=test)
 summary(lm2)
@@ -77,14 +77,14 @@ print(paste("mse: ",mse2))
 ```
 
 #Step 6 
-There is evidence of non-lineartiy from the residual graphs. 
+There is evidence of non-linearity from the residual graphs.
 ```{r}
 par(mfrow=c(2,2))
 plot(test)
 ```
 
 # Step 7
-2nd Linear model to predict mpg by horsepower. The r^2 increases to approx. 62% which is better than the prevous result. 
+2nd Linear model to predict mpg by horsepower. The r^2 increases to approx. 62% which is better than the previous result.
 ```{r}
 model2 <- lm(formula = log(mpg)~horsepower, data= train)
 summary(model2)
@@ -119,7 +119,7 @@ plot(model2)
 #### Problem 2
 
 #Step 1 
-Scatterplot matrix that has all the variables in the data set using pairs. 
+Scattered plot matrix that has all the variables in the data set using pairs.
 
 It has a r^2 of 73% which is a not too good and not too bad. The RSE is 4.103 on a 386 degree freedom.  
 ```{r}
@@ -134,16 +134,16 @@ plot(fit3)
 
 ```
 
-Matrix played with corelation. 
+Matrix played with correlation.
 #Step 2
 Matrix with name being taken out. To make it qualitative. 
 ```{r}
 cor(Auto[,names(Auto) !="name"])
 ```
 
-lm function to perform multiple linear regression with name exluded. This included mpg. 
+lm function to perform multiple linear regression with name excluded. This included mpg.
 
-There are a few significat relationship to the reponse. 
+There are a few significant relationship to the response.
 #Step 3
 ```{r}
 model = lm(mpg~ . - name, data = Auto)
@@ -152,8 +152,8 @@ summary(model)
 ```
 
 #Step 4
-Plotting to find a dignostic plot of regression fit. 
-There are no leverage points accourding to graph 3 however, in graph 4 there is a point numbered 14 on the graph that can be used as a significant predictor for leverage point. 
+Plotting to find a diagnostic plot of regression fit.
+There are no leverage points according to graph 3 however, in graph 4 there is a point numbered 14 on the graph that can be used as a significant predictor for leverage point.
 ```{r}
 par(mflow = c(2,2))
 plot(model)
@@ -165,7 +165,7 @@ str(Auto[14,])
 
 Found a few models to compare, the last model is the most significant as it correlates to almost all of them except for 1. 
 
-With a r^2 of approx. 86% this is the best comparision. 
+With a r^2 of approx. 86% this is the best comparison.
 
 ```{r}
 model = lm(mpg ~ . - name+displacement:weight, data = Auto)

@@ -14,15 +14,15 @@ output:
 AirQ <- read.csv(file = '/Users/trishalvarma/Desktop/Changping.csv')
 ```
 
-# Data Clearning
+# Data Cleaning
 ---
 Website: http://archive.ics.uci.edu/ml/datasets/Beijing+Multi-Site+Air-Quality+Data 
-From: "UCI Machine Learning Repositor"
+From: "UCI Machine Learning Repository"
 ---
 Used any(is.na(data)) to see if there are any data missing from the columns. Then used na.omit, because data can be filled with NA and not show up as a blank data. Eliminates missing values. Provided the link from where the data is downloaded. 
 
 Steps taken are listed above, to remove any blank/na values.
-#Datal Cleanup
+#Data Cleanup
 ```{r}
 AirQ$No <- NULL 
 AirQ$PRES <- NULL
@@ -56,7 +56,7 @@ df$NO2 <- as.factor(df$NO2)
 
 # Data Exploration 
 
-Using more than 5 functions to look at the Air Quality data, then providing a informative R graphs using a historgram, and a plot chart to show the just the sheer amount of data that was collected. 
+Using more than 5 functions to look at the Air Quality data, then providing a informative R graphs using a histogram, and a plot chart to show the just the sheer amount of data that was collected.
 ```{r}
 class(AirQ)
 head(AirQ, 5)
@@ -78,9 +78,9 @@ plot(AirQ$NO2, col = rgb(0,0,0, alpha =.3))
 
 #Running Algorithms on the data set. 
 
-Linear regression run on NO2 + PM10 + PM2.5 in comparison to hour + day to find strong predictors for later tests to be comepleted for this data. I will be paired with other data to corroborate the increase in polution in comparision to either hour, day, or year. 
+Linear regression run on NO2 + PM10 + PM2.5 in comparison to hour + day to find strong predictors for later tests to be completed for this data. I will be paired with other data to corroborate the increase in pollution in comparison to either hour, day, or year.
 
-PM10 and PM2.5 refer to the diameter of the particulates pollution in the air which is a good comparision with hour and time with rising levels of harmful gasses. 
+PM10 and PM2.5 refer to the diameter of the particulates pollution in the air which is a good comparison with hour and time with rising levels of harmful gasses.
 
 We use hour and day so we can see the trend throughout the day of the levels of harmful 
 ```{r}
@@ -102,7 +102,7 @@ mse_lm <- mean(pd1 - test_no2$NO2)
 
 ```
 
-We will use kNN function, which can be used for both classification and regression problems. Higher range varibales can have bias, and it does get expensive to run this algorithm. However, it might help us remove some noise from the data we have built. 
+We will use kNN function, which can be used for both classification and regression problems. Higher range variables can have bias, and it does get expensive to run this algorithm. However, it might help us remove some noise from the data we have built.
 ```{r}
 library(caret)
 library(lattice)
@@ -150,7 +150,7 @@ The performance of random forest was next to none as it made over 500 trees and 
 
 kNN function was the worst case scenario for the data. 
 
-script was able to learn that target variables were weak linear relatinship however, still able to complete the test. 
+script was able to learn that target variables were weak linear relationship however, still able to complete the test.
 
 
 
