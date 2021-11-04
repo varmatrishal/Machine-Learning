@@ -1,7 +1,8 @@
 # Machine-Learning
 ```{
 Machine Learning with R, C++ and Python
-Directory contains R and Python language machine learning programs that have been made easier to read using Jupyter notebook. } 
+Directory contains R and Python language machine learning programs that have been made easier to read using 
+Jupyter notebook. } 
 ```
 
 Content: 
