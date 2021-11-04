@@ -32,4 +32,4 @@ Content:
 7. Titanic_survey -                            ` Python and Jupter notebook program containing data from the sinking of RMS titanic. Used for data analysis. `
 
 
-Please let me know if there are any mistakes
+Please let me know if there are any mistakes. [^1]
