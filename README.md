@@ -31,4 +31,3 @@ Content:
 
 ```{
 Please let me know if there are any mistakes
-}```
